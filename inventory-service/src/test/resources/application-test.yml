@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: inventory-service
+  cloud:
+    discovery:
+      enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    maximum-pool-size: 10
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+
+server:
+  port: 28282
+
+
