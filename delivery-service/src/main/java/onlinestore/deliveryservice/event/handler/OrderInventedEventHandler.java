@@ -2,7 +2,7 @@ package onlinestore.deliveryservice.event.handler;
 
 import onlinestore.deliveryservice.event.InventoryDocumentEvent;
 import onlinestore.deliveryservice.event.OrderStatusEvent;
-import onlinestore.deliveryservice.model.entity.DeliveryStatusEntity;
+import onlinestore.deliveryservice.model.entity.DeliveryEntity;
 import onlinestore.deliveryservice.model.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class OrderInventedEventHandler implements EventHandler<InventoryDocument
     @Override
     @Transactional
     public OrderStatusEvent handleEvent(InventoryDocumentEvent event) {
-        DeliveryStatusEntity deliveryStatus = new DeliveryStatusEntity(event);
+        DeliveryEntity deliveryStatus = new DeliveryEntity(event.getOrderId());
         deliveryRepository.save(deliveryStatus);
         return OrderStatusEvent.fromDeliveryStatusEntity(deliveryStatus);
     }

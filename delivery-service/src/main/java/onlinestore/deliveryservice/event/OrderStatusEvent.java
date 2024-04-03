@@ -2,7 +2,7 @@ package onlinestore.deliveryservice.event;
 
 import lombok.Builder;
 import lombok.Data;
-import onlinestore.deliveryservice.model.entity.DeliveryStatusEntity;
+import onlinestore.deliveryservice.model.entity.DeliveryEntity;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +17,7 @@ public class OrderStatusEvent implements Event {
     private String status;
     private String statusDescription;
 
-    public static OrderStatusEvent fromDeliveryStatusEntity(DeliveryStatusEntity deliveryStatus) {
+    public static OrderStatusEvent fromDeliveryStatusEntity(DeliveryEntity deliveryStatus) {
         return builder()
                 .orderId(deliveryStatus.getOrderId())
                 .status(deliveryStatus.getStatus().toString())

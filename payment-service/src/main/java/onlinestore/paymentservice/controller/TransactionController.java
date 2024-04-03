@@ -3,7 +3,6 @@ package onlinestore.paymentservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.extern.slf4j.Slf4j;
 import onlinestore.paymentservice.dto.PaymentDto;
 import onlinestore.paymentservice.dto.TransactionDto;
 import onlinestore.paymentservice.model.entity.PaymentEntity;
@@ -14,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 
 import java.util.Comparator;
+import java.util.List;
 
-@Slf4j
 @RestController
 public class TransactionController {
 
@@ -33,9 +31,9 @@ public class TransactionController {
 
     @Operation(summary = "List all transaction", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/transaction")
-    public Flux<TransactionDto> getTransactions() {
-        return Flux.fromIterable(transactionRepository.findAll().stream().sorted(Comparator.comparing(TransactionEntity::getId))
-                .map(TransactionDto::fromTransactionEntity).toList());
+    public List<TransactionDto> getTransactions() {
+        return transactionRepository.findAll().stream().sorted(Comparator.comparing(TransactionEntity::getId))
+                .map(TransactionDto::fromTransactionEntity).toList();
     }
 
     @Operation(summary = "Get transaction by id", security = @SecurityRequirement(name = "bearerAuth"))
@@ -48,9 +46,9 @@ public class TransactionController {
 
     @Operation(summary = "List all payments", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/payment")
-    public Flux<PaymentDto> getPayments() {
-        return Flux.fromIterable(paymentRepository.findAll().stream().sorted(Comparator.comparing(PaymentEntity::getId))
-                .map(PaymentDto::fromPaymentEntity).toList());
+    public List<PaymentDto> getPayments() {
+        return paymentRepository.findAll().stream().sorted(Comparator.comparing(PaymentEntity::getId))
+                .map(PaymentDto::fromPaymentEntity).toList();
     }
 
     @Operation(summary = "Get payment by id", security = @SecurityRequirement(name = "bearerAuth"))

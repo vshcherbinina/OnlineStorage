@@ -2,33 +2,35 @@ package onlinestore.paymentservice.model.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
-@ToString
 @NoArgsConstructor
 @Entity(name="transaction_acc")
 public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "transaction_to_account_fk"), nullable = false)
     private AccountEntity account;
+
     @Column(nullable = false)
     private int income;
-    @Column(nullable = false)
-    private Double amount;
+    @Column(columnDefinition = "numeric(15,2)")
+    private BigDecimal amount;
     @Column(nullable = false)
     private LocalDateTime date;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id", foreignKey = @ForeignKey(name = "transaction_to_payment_fk"))
     private PaymentEntity payment;
 
-    public TransactionEntity(AccountEntity account, Double amount, int income) {
+    public TransactionEntity(AccountEntity account, BigDecimal amount, int income) {
         this.account = account;
         this.income = income;
         this.amount = amount;

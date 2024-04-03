@@ -1,5 +1,6 @@
 package onlinestore.inventoryservice;
 
+import onlinestore.inventoryservice.InventoryServiceApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @AutoConfigureMockMvc
 public abstract class BaseIT {
-    private static final String DATABASE_NAME = "payment_db";
+    private static final String DATABASE_NAME = "inventory_db";
     @Autowired
     public TestRestTemplate restTemplate;
 

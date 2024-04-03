@@ -2,16 +2,17 @@ package onlinestore.inventoryservice.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import onlinestore.inventoryservice.model.entity.InventoryDetailEntity;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
 public class OrderDetailDto {
     private String productArticle;
-    private Double price;
+    private BigDecimal price;
     private Double quantity;
-    private Double amount;
+    private BigDecimal amount;
 
 public static OrderDetailDto fromInventoryDetailEntity (InventoryDetailEntity detail) {
     return builder()
@@ -21,5 +22,12 @@ public static OrderDetailDto fromInventoryDetailEntity (InventoryDetailEntity de
             .amount(detail.getAmount())
             .build();
 }
+
+    public OrderDetailDto(String productArticle, BigDecimal price, Double quantity, BigDecimal amount) {
+        this.productArticle = productArticle;
+        this.price = price;
+        this.quantity = quantity;
+        this.amount = amount;
+    }
 
 }

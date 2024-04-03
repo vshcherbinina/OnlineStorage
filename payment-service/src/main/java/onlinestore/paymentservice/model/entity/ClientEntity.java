@@ -1,24 +1,22 @@
 package onlinestore.paymentservice.model.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
-@ToString
 @NoArgsConstructor
 @Entity(name="client")
 public class ClientEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String userName;
-
+    @Column(nullable = false)
     private String name;
-
     @Transient
     private AccountEntity account;
 
@@ -26,5 +24,4 @@ public class ClientEntity {
         this.userName = userName;
         this.name = name;
     }
-
 }

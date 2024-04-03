@@ -20,10 +20,8 @@ public class MovementEntity {
 
     @Column(nullable = false)
     private int income;
-
     @Column(nullable = false)
     private LocalDateTime date;
-
     @Column(nullable = false)
     private Double quantity;
 

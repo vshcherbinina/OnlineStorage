@@ -1,16 +1,16 @@
 package onlinestore.inventoryservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import onlinestore.inventoryservice.model.entity.ProductEntity;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
 public class ProductDto {
     private Long id;
     private String article;
-    private Double price;
+    private BigDecimal price;
     private Double quantity;
     private String unit;
     private String description;

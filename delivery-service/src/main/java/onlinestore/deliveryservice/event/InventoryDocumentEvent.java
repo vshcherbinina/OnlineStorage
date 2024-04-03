@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import onlinestore.deliveryservice.dto.OrderDetailDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,13 +17,13 @@ public class InventoryDocumentEvent implements Event {
     private Long id;
     private LocalDateTime dateCreated;
     private LocalDateTime dateModified;
-    private String userLogin;
+    private String userName;
     private String clientName;
     private String destinationAddress;
     private String description;
     private int income;
     private LocalDateTime orderDataCreated;
-    private Double amount;
+    private BigDecimal amount;
     private String status;
     private String statusDescription;
     private Long orderId;

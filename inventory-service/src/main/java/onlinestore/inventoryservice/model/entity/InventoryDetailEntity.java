@@ -1,10 +1,12 @@
 package onlinestore.inventoryservice.model.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import onlinestore.inventoryservice.dto.OrderDetailDto;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -13,6 +15,8 @@ public class InventoryDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ToString.Exclude @EqualsAndHashCode.Exclude @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", foreignKey = @ForeignKey(name = "inventory_detail_to_document_data_fk"))
     private InventoryDocumentEntity document;
@@ -25,8 +29,10 @@ public class InventoryDetailEntity {
     @Column(nullable = false)
     private Double quantity;
 
-    private Double price;
-    private Double amount;
+    @Column(columnDefinition = "numeric(15,2)")
+    private BigDecimal price;
+    @Column(columnDefinition = "numeric(15,2)")
+    private BigDecimal amount;
 
     public InventoryDetailEntity(OrderDetailDto detailDto) {
         this.productArticle = detailDto.getProductArticle();
@@ -34,4 +40,5 @@ public class InventoryDetailEntity {
         this.quantity = detailDto.getQuantity();
         this.amount = detailDto.getAmount();
     }
+
 }

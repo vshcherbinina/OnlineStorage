@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import onlinestore.orderservice.dto.ErrorDto;
 import onlinestore.orderservice.dto.OrderDto;
 import onlinestore.orderservice.dto.StatusDto;
-import onlinestore.orderservice.exception.OrderNotFoundException;
-import onlinestore.orderservice.model.entity.OrderEntity;
-import onlinestore.orderservice.model.repository.OrderRepository;
 import onlinestore.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,18 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @RestController
 public class OrderController {
 
-    private final OrderRepository orderRepository;
     private final OrderService orderService;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository, OrderService orderService) {
-        this.orderRepository = orderRepository;
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -53,7 +47,7 @@ public class OrderController {
     public ResponseEntity<?> addOrder(@RequestBody OrderDto input) {
         orderService.checkData(input);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.addOrder(input).orElse(input));
+                .body(orderService.addOrder(input));
     }
 
     @Operation(summary = "Update order status", security = @SecurityRequirement(name = "bearerAuth"))

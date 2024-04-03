@@ -15,10 +15,6 @@ public interface InventoryService {
 
     void saveDocumentWithDetails(InventoryDocumentEntity document);
 
-    void deleteMovementsByDocumentId(Long paymentId);
-
-    void saveMovement(MovementEntity movement);
-
     ProductDto addProductStockBalance(ProductDto input);
 
     void changeProductStockBalance(MovementEntity movement);

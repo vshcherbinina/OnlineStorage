@@ -7,22 +7,24 @@ import onlinestore.deliveryservice.event.InventoryDocumentEvent;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "delivery_status")
+@Entity(name = "delivery")
 @NoArgsConstructor
 @Data
-public class DeliveryStatusEntity {
+public class DeliveryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private Long orderId;
-
+    @Column(nullable = false)
     private LocalDateTime dateModified;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private DeliveryStatus status;
     private String description;
 
-    public DeliveryStatusEntity(InventoryDocumentEvent event) {
-        this.orderId = event.getOrderId();
+    public DeliveryEntity(Long orderId) {
+        this.orderId = orderId;
         this.dateModified = LocalDateTime.now();
         this.status = DeliveryStatus.DELIVERED;
         int random = (int) (Math.random()*4);

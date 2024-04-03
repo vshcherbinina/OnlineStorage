@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"petrov\",\r\n    \"password\": \"qwerty12345\"\r\n}    ",
+					"raw": "{\r\n    \"name\": \"first\",\r\n    \"password\": \"password\"\r\n}    ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"petrov\",\r\n    \"password\": \"qwerty12345\"\r\n}    ",
+					"raw": "{\r\n    \"name\": \"first\",\r\n    \"password\": \"password\"\r\n}    ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -83,7 +83,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userName\": \"petrov\",\r\n    \"name\": \"Петров\",\r\n    \"balance\": 1000\r\n}    ",
+					"raw": "{\r\n    \"userName\": \"first\",\r\n    \"name\": \"Client First\",\r\n    \"balance\": 1000\r\n}    ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -122,7 +122,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userName\": \"petrov\",\r\n    \"amount\": 100.00\r\n}    ",
+					"raw": "{\r\n    \"userName\": \"first\",\r\n    \"amount\": 100.00\r\n}    ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -130,7 +130,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9090/api/client",
+					"raw": "http://localhost:9090/api/client/balance",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -138,7 +138,8 @@
 					"port": "9090",
 					"path": [
 						"api",
-						"client"
+						"client",
+						"balance"
 					]
 				}
 			},
@@ -200,7 +201,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userName\": \"petrov\",\r\n    \"amount\": 50.0,\r\n    \"destinationAddress\": \"Saint Petersburg, Lenina st., 1\",\r\n    \"description\": \"test1\",\r\n    \"details\": [\r\n        {\r\n            \"productArticle\": \"Cream\",\r\n            \"price\": 50.0,\r\n            \"quantity\": 1.0,\r\n            \"amount\": 50.0\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"userName\": \"first\",\r\n    \"amount\": 50.0,\r\n    \"destinationAddress\": \"Saint Petersburg, Lenina st., 1\",\r\n    \"description\": \"test1\",\r\n    \"details\": [\r\n        {\r\n            \"productArticle\": \"Cream\",\r\n            \"price\": 50.0,\r\n            \"quantity\": 1.0,\r\n            \"amount\": 50.0\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -230,7 +231,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXRyb3YiLCJpc3MiOiJPbmxpbmUgc3RvcmUiLCJleHAiOjE3MTEzNzU5OTMsImlhdCI6MTcxMTI4OTU5M30.XNp5SVUNR-e2UWzv3DzsxbMB_hzt7IwFB1XBK9x3HXwzDOkByhvaSNWDVSx6s1QjS5UcwWd8lKsPiwyAroX4Ag",
+							"value": "enter token",
 							"type": "string"
 						}
 					]

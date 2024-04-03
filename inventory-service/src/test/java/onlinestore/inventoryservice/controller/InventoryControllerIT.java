@@ -1,10 +1,10 @@
-package onlinestore.inventoryservice;
+package onlinestore.inventoryservice.controller;
 
-import onlinestore.inventoryservice.controller.InventoryController;
+import lombok.extern.slf4j.Slf4j;
+import onlinestore.inventoryservice.BaseIT;
+import onlinestore.inventoryservice.TestUtil;
 import onlinestore.inventoryservice.dto.ProductDto;
 import onlinestore.inventoryservice.model.entity.ProductEntity;
-import onlinestore.inventoryservice.model.repository.InventoryDetailRepository;
-import onlinestore.inventoryservice.model.repository.InventoryDocumentRepository;
 import onlinestore.inventoryservice.model.repository.ProductRepository;
 import onlinestore.inventoryservice.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
@@ -23,14 +23,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @Sql(scripts = "classpath:clearAll.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class InventoryControllerIT extends BaseIT{
+public class InventoryControllerIT extends BaseIT {
     @Autowired
     private InventoryService inventoryService;
     @Autowired
     private ProductRepository productRepository;
-
-    Logger logger = LoggerFactory.getLogger(InventoryControllerIT.class);
 
     @Configuration
     @ComponentScan(basePackageClasses = {InventoryController.class})
@@ -42,10 +41,7 @@ public class InventoryControllerIT extends BaseIT{
 
     @BeforeEach
     public void setUp() {
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setArticle("Cream");
-        productEntity.setDescription("Test's cream");
-        productEntity.setUnit("pc");
+        ProductEntity productEntity = TestUtil.getInstanceProduct();
 
         productDto = ProductDto.fromProductEntity(productEntity);
         productDto.setQuantity(5D);
@@ -58,7 +54,7 @@ public class InventoryControllerIT extends BaseIT{
     @Test
     public void checkAddProduct() throws Exception {
         ResponseEntity<ProductDto> response = addProduct();
-        logger.info("response status {} \n\t {}", response.getStatusCode(), response.getBody());
+        log.info("response status {} \n\t {}", response.getStatusCode(), response.getBody());
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
         Assertions.assertNotNull(response.getBody().getId());
@@ -85,7 +81,7 @@ public class InventoryControllerIT extends BaseIT{
     public void checkAddQuantity() throws Exception {
         addProduct();
         ResponseEntity<ProductDto> response = addQuantityProduct();
-        logger.info("response status {}, body: \n\t {}", response.getStatusCode(), response.getBody());
+        log.info("response status {}, body: \n\t {}", response.getStatusCode(), response.getBody());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertTrue((response.getBody() != null));
         Assertions.assertEquals((productDto.getQuantity() + productAddQuantityDto.getQuantity()), response.getBody().getQuantity());
@@ -95,14 +91,14 @@ public class InventoryControllerIT extends BaseIT{
     public void checkGetProducts() throws Exception {
         addProduct();
         ResponseEntity<List<ProductDto>> allClients = getAllProducts();
-        logger.info("response status {}, body: \n\t {}", allClients.getStatusCode(), allClients.getBody());
+        log.info("response status {}, body: \n\t {}", allClients.getStatusCode(), allClients.getBody());
         Assertions.assertEquals(HttpStatus.OK, allClients.getStatusCode());
         Assertions.assertNotNull(allClients.getBody());
         Assertions.assertEquals(1, allClients.getBody().size());
         Long id = allClients.getBody().stream().findFirst().orElse(null).getId();
 
         ResponseEntity<ProductDto> client = getProduct(id);
-        logger.info("response (id = {}) status {}, body: \n\t {}", id, client.getStatusCode(), client.getBody());
+        log.info("response (id = {}) status {}, body: \n\t {}", id, client.getStatusCode(), client.getBody());
         Assertions.assertEquals(HttpStatus.OK, client.getStatusCode());
         Assertions.assertNotNull(client.getBody());
         Assertions.assertEquals(productDto.getQuantity(), client.getBody().getQuantity());

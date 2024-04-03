@@ -3,19 +3,19 @@ package onlinestore.orderservice.dto;
 import lombok.Builder;
 import lombok.Data;
 import onlinestore.orderservice.model.entity.OrderDetailEntity;
-import onlinestore.orderservice.model.entity.OrderEntity;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Data
 @Builder
 public class OrderDetailDto {
     @NotBlank
     private String productArticle;
-    private Double price;
+    private BigDecimal price;
     @NotBlank
     private Double quantity;
-    private Double amount;
+    private BigDecimal amount;
 
     public OrderDetailEntity toOrderDetail() {
         return new OrderDetailEntity()

@@ -2,11 +2,11 @@ package onlinestore.orderservice.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlinestore.orderservice.exception.OrderNotFoundException;
 import onlinestore.orderservice.model.entity.OrderDetailEntity;
 import onlinestore.orderservice.model.entity.OrderEntity;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +17,11 @@ public class OrderDto {
     private String dateCreated;
     @NotBlank
     private String userName;
-    @NotBlank
-    private Double amount;
+    private BigDecimal amount;
     private String destinationAddress;
     private String description;
     private String status;
+    private List<OrderStatusHistoryDto> history;
     private List<OrderDetailDto> details;
 
     public OrderEntity toOrder() {
@@ -29,7 +29,7 @@ public class OrderDto {
                 .withUserName(userName)
                 .withAmount(amount)
                 .withDestinationAddress(destinationAddress)
-                .withDescription(description);
+                .withDescription(description == null ? "" : description);
         details.forEach(detailDto -> {
             OrderDetailEntity detail = detailDto.toOrderDetail();
             detail.setOrder(order);
@@ -53,6 +53,7 @@ public class OrderDto {
                 .build();
         orderDto.details = new ArrayList<>();
         order.getDetails().forEach(detail -> orderDto.details.add(OrderDetailDto.fromOrderDetail(detail)));
+        orderDto.history = new ArrayList<>();
         return orderDto;
     }
 }

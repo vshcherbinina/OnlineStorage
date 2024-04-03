@@ -9,9 +9,12 @@ import onlinestore.paymentservice.model.entity.*;
 import onlinestore.paymentservice.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Component
@@ -73,7 +76,7 @@ public class RepositoryUtil {
         return orderEvent;
     }
 
-    public void updatePaymentStatus(PaymentEntity payment, PaymentStatus status) {
+    private void updatePaymentStatus(PaymentEntity payment, PaymentStatus status) {
         payment.setStatusAndDateModification(status);
         PaymentEntity savedPayment = paymentRepository.save(payment);
         payment.setId(savedPayment.getId());
@@ -98,8 +101,9 @@ public class RepositoryUtil {
 
     private void changeBalance(TransactionEntity transaction) {
         AccountEntity account = transaction.getAccount();
-        Double changedBalance = account.getBalance() +
-                transaction.getIncome() * transaction.getAmount();
+        BigDecimal changedBalance = account.getBalance().add(
+                BigDecimal.valueOf(transaction.getIncome() * transaction.getAmount().doubleValue())
+        );
         account.setBalance(changedBalance);
         accountRepository.save(account);
     }
@@ -120,7 +124,8 @@ public class RepositoryUtil {
         }
     }
 
-    public void createTransactionAndChangeBalance(ClientEntity client, Double amount, boolean income) {
+    @Transactional
+    public void createTransactionAndChangeBalance(ClientEntity client, BigDecimal amount, boolean income) {
         try {
             lockByAccountId.lock(client.getAccount().getId());
             TransactionEntity transaction = new TransactionEntity(client.getAccount(), amount, income ? 1 : -1);
@@ -130,4 +135,5 @@ public class RepositoryUtil {
             lockByAccountId.unlock(client.getAccount().getId());
         }
     }
+
 }

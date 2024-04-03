@@ -1,16 +1,15 @@
 package onlinestore.orderservice.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlinestore.orderservice.dto.OrderDetailDto;
 import onlinestore.orderservice.model.entity.OrderEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Data
 @Builder
 public class OrderEvent implements Event {
@@ -19,7 +18,7 @@ public class OrderEvent implements Event {
 
     private Long id;
     private String userName;
-    private Double amount;
+    private BigDecimal amount;
     private String destinationAddress;
     private String description;
     private LocalDateTime dateCreated;

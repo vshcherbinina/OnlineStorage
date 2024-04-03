@@ -2,3 +2,5 @@ spring:
   cloud:
     config:
       enabled: false
+gateway:
+  uri: http://localhost:9090

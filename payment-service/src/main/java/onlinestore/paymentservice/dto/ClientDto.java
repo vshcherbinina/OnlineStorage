@@ -1,20 +1,19 @@
 package onlinestore.paymentservice.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import onlinestore.paymentservice.model.entity.ClientEntity;
 
+import java.math.BigDecimal;
+
 @Data
-@AllArgsConstructor
 @Builder
 public class ClientDto {
     private Long id;
     private String userName;
     private String name;
     private String account;
-    private Double balance;
+    private BigDecimal balance;
 
     public static ClientDto fromClientEntity(ClientEntity clientEntity) {
         return builder()
@@ -22,7 +21,7 @@ public class ClientDto {
                 .userName(clientEntity.getUserName())
                 .name(clientEntity.getName())
                 .account(clientEntity.getAccount() == null ? "" : clientEntity.getAccount().getNumber())
-                .balance(clientEntity.getAccount() == null ? 0D : clientEntity.getAccount().getBalance())
+                .balance(clientEntity.getAccount() == null ? BigDecimal.valueOf(0.00) : clientEntity.getAccount().getBalance())
                 .build();
     }
 

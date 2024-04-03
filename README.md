@@ -53,7 +53,7 @@ After that you can find Swagger UI of every service at URL.
 
 http://localhost:8080/api/swagger-ui/index.html
 
-Don't forget to put actual port number and prefix of service
+
 
 At Gateway, you can find joined Swagger UI
 http://localhost:9090/swagger-ui.html
@@ -71,8 +71,8 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "petrov",
-  "password": "qwerty12345"
+  "name": "first",
+  "password": "password"
 }'
 ```
 
@@ -83,8 +83,8 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "petrov",
-  "password": "qwerty12345"
+  "name": "first",
+  "password": "password"
 }'
 ```
 
@@ -102,8 +102,8 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H 'Bearer <put token here>'
   -d '{
-    "userName": "petrov",
-    "name": "Petrov Pavel",
+    "userName": "first",
+    "name": "Client First",
     "balance": 1000
 }'
 ```
@@ -124,7 +124,7 @@ curl -X 'POST' \
     "quantity": 5,
     "unit": "pc",
     "description": "test",
-    "stockAddress": "Moscow, Lenina st., 5"
+    "stockAddress": "Moscow, Lenina st., 1"
 } 
 '
 ```
@@ -140,9 +140,9 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H 'Bearer <put token here>'
   -d '{
-    "userName": "petrov",
+    "userName": "first",
     "amount": 50.0,
-    "destinationAddress": "Saint Petersburg, Lenina st., 1",
+    "destinationAddress": "Saint Petersburg, Nevsky Avenue, 1",
     "description": "test1",
     "details": [
         {
@@ -197,7 +197,7 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-    "userName": "petrov",
+    "userName": "first",
     "amount": 100.00
 }'
 ```

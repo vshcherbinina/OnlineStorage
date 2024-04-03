@@ -4,12 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 import onlinestore.paymentservice.model.entity.PaymentEntity;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 public class PaymentDto {
     private Long id;
     private String currency;
-    private Double amount;
+    private BigDecimal amount;
     private String dateCreated;
     private String dateModified;
     private String status;

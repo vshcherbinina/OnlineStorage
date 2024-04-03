@@ -1,7 +1,8 @@
 package onlinestore.inventoryservice.model.util;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import onlinestore.inventoryservice.model.entity.InventoryDetailEntity;
+import onlinestore.inventoryservice.model.entity.InventoryDocumentEntity;
 import onlinestore.inventoryservice.model.entity.ProductEntity;
 import onlinestore.inventoryservice.model.repository.InventoryDetailRepository;
 import onlinestore.inventoryservice.model.repository.InventoryDocumentRepository;
@@ -10,9 +11,13 @@ import onlinestore.inventoryservice.model.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
 @Component
-@Data
+@Getter
 public class RepositoryUtil {
+
     private final ProductRepository productRepository;
 
     private final MovementRepository movementRepository;
@@ -33,6 +38,26 @@ public class RepositoryUtil {
     public void saveProduct(ProductEntity product) {
         ProductEntity savedProduct = productRepository.save(product);
         product.setId(savedProduct.getId());
+    }
+
+    public List<InventoryDocumentEntity> findAll() {
+        return documentRepository.findAll();
+    }
+
+    public List<InventoryDetailEntity> findAllDetailsByDocumentId(Long id) {
+        return detailRepository.findAllByDocumentId(id);
+    }
+
+    public Optional<InventoryDocumentEntity> findById(Long id) {
+        return documentRepository.findById(id);
+    }
+
+    public List<ProductEntity> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    public Optional<ProductEntity> getProductById(Long id) {
+        return productRepository.findById(id);
     }
 }
 

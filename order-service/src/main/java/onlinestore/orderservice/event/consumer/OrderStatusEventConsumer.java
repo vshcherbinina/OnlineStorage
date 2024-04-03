@@ -31,7 +31,7 @@ public class OrderStatusEventConsumer implements EventConsumer<OrderStatusEvent>
                 .subscribe();
     }
 
-    private void updateOrderStatus(OrderStatusEvent event) {
+    public void updateOrderStatus(OrderStatusEvent event) {
         repositoryUtil.updateOrderStatus(
                 event.getOrderId(), event.getStatus(),
                 event.getDateModified(), event.getStatusDescription());

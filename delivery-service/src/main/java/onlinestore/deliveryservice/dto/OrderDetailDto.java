@@ -1,13 +1,15 @@
 package onlinestore.deliveryservice.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class OrderDetailDto {
     private String productArticle;
-    private Double price;
+    private BigDecimal price;
     private Double quantity;
-    private Double amount;
+    private BigDecimal amount;
 }

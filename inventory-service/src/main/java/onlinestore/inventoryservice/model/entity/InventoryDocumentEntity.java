@@ -1,10 +1,13 @@
 package onlinestore.inventoryservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import onlinestore.inventoryservice.event.OrderEvent;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,56 +19,34 @@ public class InventoryDocumentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private LocalDateTime dateCreated;
-
     @Column(nullable = false)
     private LocalDateTime dateModified;
-
     @Column(nullable = false)
     private String userName;
     private String clientName;
-
     @Column(nullable = false)
     private String destinationAddress;
     private String description;
-
     @Column(nullable = false)
     private int income;
     private LocalDateTime orderDataCreated;
-    private Double amount;
-
+    @Column(columnDefinition = "numeric(15,2)")
+    private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
     private String statusDescription;
     private String orderStatus;
-
     @Column(nullable = false)
     private Long orderId;
-    @Transient
-    List<InventoryDetailEntity> details;
 
-    public InventoryDocumentEntity(OrderEvent orderEvent) {
-        this.userName = orderEvent.getUserName();
-        this.clientName = orderEvent.getClientName();
-        this.destinationAddress = orderEvent.getDestinationAddress();
-        this.description = orderEvent.getDescription();
-        this.income = -1;
-        this.orderDataCreated = orderEvent.getDateCreated();
-        this.amount = orderEvent.getAmount();
-        this.orderStatus = orderEvent.getStatus();
-        this.orderId = orderEvent.getId();
-        setStatusAndDateModification(DocumentStatus.CREATED);
-        this.dateCreated = this.dateModified;
-        details = new ArrayList<>();
-        orderEvent.getDetails().forEach(d -> details.add(new InventoryDetailEntity(d)));
-        details.forEach(d -> d.setDocument(this));
-    }
+    @EqualsAndHashCode.Exclude
+    @Transient
+    private List<InventoryDetailEntity> details = new ArrayList<>();
 
     public void setStatusAndDateModification(DocumentStatus status) {
         this.status = status;
         this.dateModified = LocalDateTime.now();
     }
-
 }

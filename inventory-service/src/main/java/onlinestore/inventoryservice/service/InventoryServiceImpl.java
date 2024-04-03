@@ -1,6 +1,5 @@
 package onlinestore.inventoryservice.service;
 
-import lombok.Data;
 import onlinestore.inventoryservice.dto.InventoryDocumentDto;
 import onlinestore.inventoryservice.dto.ProductDto;
 import onlinestore.inventoryservice.exception.ProductCreateException;
@@ -9,13 +8,13 @@ import onlinestore.inventoryservice.model.entity.*;
 import onlinestore.inventoryservice.model.util.LockByKey;
 import onlinestore.inventoryservice.model.util.RepositoryUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
-@Data
 public class InventoryServiceImpl implements InventoryService{
 
     private final RepositoryUtil repositoryUtil;
@@ -52,13 +51,11 @@ public class InventoryServiceImpl implements InventoryService{
         });
     }
 
-    @Override
-    public void deleteMovementsByDocumentId(Long documentId) {
+    private void deleteMovementsByDocumentId(Long documentId) {
         repositoryUtil.getMovementRepository().deleteAllByDocumentId(documentId);
     }
 
-    @Override
-    public void saveMovement(MovementEntity movement) {
+    private void saveMovement(MovementEntity movement) {
         MovementEntity savedMovement = repositoryUtil.getMovementRepository().save(movement);
         movement.setId(savedMovement.getId());
     }
@@ -67,7 +64,7 @@ public class InventoryServiceImpl implements InventoryService{
         if (input.getArticle() == null || input.getArticle().isBlank()) {
             throw new ProductCreateException();
         }
-        if (input.getQuantity() == null || input.getQuantity() <=0) {
+        if (input.getQuantity() == null || input.getQuantity().compareTo(0D) <= 0) {
             throw new ProductCreateException(-1D);
         }
         return repositoryUtil.getProductRepository().findOneByArticle(input.getArticle())
@@ -76,6 +73,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
+    @Transactional
     public ProductDto addProductStockBalance(ProductDto input) {
         ProductEntity product = findProduct(input);
         if (product.getId() == null) {
@@ -84,7 +82,9 @@ public class InventoryServiceImpl implements InventoryService{
         } else {
             input.setId(product.getId());
         }
-        createMovementAndChangeBalance(product, input.getQuantity(), true);
+        if (input.getQuantity().compareTo(0D) > 0) {
+            createMovementAndChangeBalance(product, input.getQuantity(), true);
+        }
         return ProductDto.fromProductEntity(product);
     }
 
@@ -94,6 +94,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
+    @Transactional
     public void changeProductStockBalance(MovementEntity movement) {
         ProductEntity product = movement.getProduct();
         try {
@@ -109,7 +110,7 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public void loadDetails(InventoryDocumentEntity document) {
-        List<InventoryDetailEntity> details = repositoryUtil.getDetailRepository().findAllByDocumentId(document.getId());
+        List<InventoryDetailEntity> details = repositoryUtil.findAllDetailsByDocumentId(document.getId());
         details.forEach(detail -> detail.setDocument(document));
         document.setDetails(details);
 
@@ -117,7 +118,7 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public List<InventoryDocumentDto> findAllInventoryDocuments() {
-        List<InventoryDocumentEntity> documentEntityList = repositoryUtil.getDocumentRepository().findAll();
+        List<InventoryDocumentEntity> documentEntityList = repositoryUtil.findAll();
         documentEntityList.forEach(this::loadDetails);
         List<InventoryDocumentDto> documentDtoList = new ArrayList<>();
         documentEntityList.forEach(documentEntity -> documentDtoList.add(InventoryDocumentDto.fromInventoryDocumentEntity(documentEntity)));
@@ -127,7 +128,7 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public InventoryDocumentDto getInventoryDocumentById(Long id) {
-        InventoryDocumentEntity documentEntity = repositoryUtil.getDocumentRepository().findById(id)
+        InventoryDocumentEntity documentEntity = repositoryUtil.findById(id)
                 .orElse(null);
         if (documentEntity == null) {
             return null;
@@ -138,12 +139,12 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public List<ProductEntity> findAllProducts() {
-        return repositoryUtil.getProductRepository().findAll();
+        return repositoryUtil.getAllProducts();
     }
 
     @Override
     public ProductEntity getProductById(Long id) {
-        return repositoryUtil.getProductRepository().findById(id)
+        return repositoryUtil.getProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 

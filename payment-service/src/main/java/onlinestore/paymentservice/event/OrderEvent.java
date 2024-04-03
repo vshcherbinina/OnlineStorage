@@ -6,6 +6,7 @@ import onlinestore.paymentservice.dto.OrderDetailDto;
 import onlinestore.paymentservice.dto.OrderStatusDto;
 import onlinestore.paymentservice.model.entity.OrderDataEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class OrderEvent implements Event {
     private Long id;
     private String userName;
     private String clientName;
-    private Double amount;
+    private BigDecimal amount;
     private String destinationAddress;
     private String description;
     private LocalDateTime dateCreated;

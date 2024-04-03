@@ -11,7 +11,7 @@ public interface OrderService {
 
     void checkData(OrderDto orderDto);
 
-    Optional<OrderDto> addOrder(OrderDto orderDto);
+    OrderDto addOrder(OrderDto orderDto);
 
     void updateOrderStatus(Long id, StatusDto statusDto);
 

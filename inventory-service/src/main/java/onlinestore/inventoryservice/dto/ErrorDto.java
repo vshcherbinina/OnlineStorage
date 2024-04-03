@@ -1,15 +1,15 @@
 package onlinestore.inventoryservice.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@ToString
 public class ErrorDto {
-
-    private String errorMessage;
-
-    private LocalDateTime timestamp;
+    private final String errorMessage;
+    private final LocalDateTime timestamp;
 
     public ErrorDto(String errorMessage) {
         this.errorMessage = errorMessage;

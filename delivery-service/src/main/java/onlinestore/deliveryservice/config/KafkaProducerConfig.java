@@ -1,4 +1,4 @@
-package onlinestore.deliveryserviceservice.config;
+package onlinestore.deliveryservice.config;
 
 import onlinestore.deliveryservice.event.InventoryDocumentEvent;
 import onlinestore.deliveryservice.event.OrderStatusEvent;

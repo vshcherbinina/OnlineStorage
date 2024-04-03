@@ -1,6 +1,6 @@
 package onlinestore.deliveryservice.service;
 
-import onlinestore.deliveryservice.model.entity.DeliveryStatusEntity;
+import onlinestore.deliveryservice.model.entity.DeliveryEntity;
 import onlinestore.deliveryservice.model.repository.DeliveryRepository;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +17,13 @@ public class DeliveryService {
         this.deliveryRepository = deliveryRepository;
     }
 
-    public List<DeliveryStatusEntity> findAllDeliveries() {
-        List<DeliveryStatusEntity> deliveryStatusEntities = deliveryRepository.findAll();
-        deliveryStatusEntities.sort(Comparator.comparing(DeliveryStatusEntity::getId));
+    public List<DeliveryEntity> findAllDeliveries() {
+        List<DeliveryEntity> deliveryStatusEntities = deliveryRepository.findAll();
+        deliveryStatusEntities.sort(Comparator.comparing(DeliveryEntity::getId));
         return deliveryStatusEntities;
     }
 
-    public Optional<DeliveryStatusEntity> getDeliveryById(Long id) {
+    public Optional<DeliveryEntity> getDeliveryById(Long id) {
         return deliveryRepository.findById(id);
     }
 }

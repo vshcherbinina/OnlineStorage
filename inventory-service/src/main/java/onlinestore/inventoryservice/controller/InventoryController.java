@@ -4,18 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
-import onlinestore.inventoryservice.dto.ErrorDto;
 import onlinestore.inventoryservice.dto.InventoryDocumentDto;
 import onlinestore.inventoryservice.dto.ProductDto;
-import onlinestore.inventoryservice.exception.ProductCreateException;
 import onlinestore.inventoryservice.model.entity.ProductEntity;
 import onlinestore.inventoryservice.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,8 +28,8 @@ public class InventoryController {
 
     @Operation(summary = "List all inventory documents", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/inventory")
-    public Flux<InventoryDocumentDto> listInventoryDocuments() {
-        return Flux.fromIterable(inventoryService.findAllInventoryDocuments());
+    public List<InventoryDocumentDto> listInventoryDocuments() {
+        return inventoryService.findAllInventoryDocuments();
     }
 
     @Operation(summary = "Get inventory document by id", security = @SecurityRequirement(name = "bearerAuth"))
@@ -42,8 +40,8 @@ public class InventoryController {
 
     @Operation(summary = "List all products", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/product")
-    public Flux<ProductEntity> listProducts() {
-        return Flux.fromIterable(inventoryService.findAllProducts());
+    public List<ProductEntity> listProducts() {
+        return inventoryService.findAllProducts();
     }
 
     @Operation(summary = "Get product by id", security = @SecurityRequirement(name = "bearerAuth"))

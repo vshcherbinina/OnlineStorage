@@ -6,15 +6,17 @@ import onlinestore.orderservice.dto.StatusDto;
 import onlinestore.orderservice.event.OrderProcessor;
 import onlinestore.orderservice.exception.IncorrectInputException;
 import onlinestore.orderservice.model.entity.OrderEntity;
+import onlinestore.orderservice.model.entity.OrderStatusHistoryEntity;
 import onlinestore.orderservice.model.repository.RepositoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -32,8 +34,8 @@ public class OrderServiceImpl implements OrderService {
         this.orderProcessor = orderProcessor;
     }
     
-    private boolean isMoreThanZero(Double value) {
-        return value != null && value > 0;
+    private boolean isMoreThanZero(BigDecimal value) {
+        return value != null && value.compareTo(BigDecimal.valueOf(0)) > 0;
     }
 
     @Override
@@ -44,34 +46,41 @@ public class OrderServiceImpl implements OrderService {
         if (orderDto.getDetails() == null || orderDto.getDetails().isEmpty()){
             throw new IncorrectInputException("indicate at least one product detail");
         }
-        Double amount = 0D;
+        if (orderDto.getDestinationAddress() == null || orderDto.getDestinationAddress().isBlank()){
+            throw new IncorrectInputException("'destinationAddress' is required");
+        }
+        BigDecimal amount = BigDecimal.valueOf(0);
         for (OrderDetailDto detail: orderDto.getDetails()) {
-            if (!isMoreThanZero(detail.getQuantity())) {
+            if (detail.getQuantity() == null || detail.getQuantity().compareTo(0D) <= 0) {
                 throw new IncorrectInputException("indicate the quantity of the product for the article '" + detail.getProductArticle() + "'");
             }
             if (!isMoreThanZero(detail.getAmount())) {
                 if (!isMoreThanZero(detail.getPrice())) {
                     throw new IncorrectInputException("for a product with an article '" + detail.getProductArticle()+ "' the price or amount must be indicated");
                 }
-                detail.setAmount(detail.getQuantity() * detail.getPrice());
+                detail.setAmount(BigDecimal.valueOf(detail.getQuantity() * detail.getPrice().doubleValue()));
             }
-            amount = amount + detail.getAmount();
+            amount = amount.add(detail.getAmount());
         }
         if (!isMoreThanZero(orderDto.getAmount())) {
             orderDto.setAmount(amount);
         } else {
-            if (!orderDto.getAmount().equals(amount)) {
-                throw new IncorrectInputException("the order amount is not equal to the total for the parts: amount by details = " + amount);
+            if (orderDto.getAmount().compareTo(amount) != 0) {
+                throw new IncorrectInputException("the order amount is not equal to the total for the parts: amount by details = " + amount + ", but actual = " + orderDto.getAmount());
             }
         }
     }
 
+
     @Override
-    public Optional<OrderDto> addOrder(OrderDto orderDto) {
-        OrderEntity order = orderDto.toOrder();
+    @Transactional
+    public OrderDto addOrder(OrderDto input) {
+        OrderEntity order = input.toOrder();
         repositoryUtil.saveOrder(order);
         orderProcessor.process(order);
-        return Optional.of(OrderDto.fromOrder(order));
+        OrderDto orderDto = OrderDto.fromOrder(order);
+        repositoryUtil.loadHistory(orderDto);
+        return orderDto;
     }
 
     @Override
@@ -84,9 +93,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getAllOrders() {
         List<OrderDto> orderDtoList = new ArrayList<>();
-        repositoryUtil.getOrderRepository().findAll().forEach(order -> {
+        repositoryUtil.getAllOrders().forEach(order -> {
             repositoryUtil.loadOrderDetails(order);
-            orderDtoList.add(OrderDto.fromOrder(order));
+            OrderDto orderDto = OrderDto.fromOrder(order);
+            repositoryUtil.loadHistory(orderDto);
+            orderDtoList.add(orderDto);
         });
         return orderDtoList;
     }
@@ -94,6 +105,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderById(Long id) {
         OrderEntity order = repositoryUtil.getOrderByIdWithDetails(id);
-        return OrderDto.fromOrder(order);
+        OrderDto orderDto = OrderDto.fromOrder(order);
+        repositoryUtil.loadHistory(orderDto);
+        return orderDto;
     }
 }

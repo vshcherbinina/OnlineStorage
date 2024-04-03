@@ -1,13 +1,11 @@
 package onlinestore.orderservice.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import onlinestore.orderservice.model.entity.OrderStatus;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderStatusEvent implements Event {

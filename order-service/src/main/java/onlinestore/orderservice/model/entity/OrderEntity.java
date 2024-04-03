@@ -1,8 +1,10 @@
 package onlinestore.orderservice.model.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,25 +16,22 @@ public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String userName;
-
-    private Double amount;
-
+    @Column(columnDefinition = "numeric(15,2)", nullable = false)
+    private BigDecimal amount;
+    @Column(nullable = false)
     private String destinationAddress;
-
     private String description;
-
     @Column(nullable = false)
     private LocalDateTime dateCreated;
-
     @Column(nullable = false)
     private LocalDateTime dateModified;
-
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
+    @EqualsAndHashCode.Exclude
     @Transient
     private final transient List<OrderDetailEntity> details;
 
@@ -48,7 +47,7 @@ public class OrderEntity {
         return this;
     }
 
-    public OrderEntity withAmount(Double amount) {
+    public OrderEntity withAmount(BigDecimal amount) {
         this.amount = amount;
         return this;
     }

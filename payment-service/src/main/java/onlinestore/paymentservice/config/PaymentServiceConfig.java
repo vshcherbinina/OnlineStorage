@@ -4,6 +4,7 @@ import onlinestore.paymentservice.event.OrderEvent;
 import onlinestore.paymentservice.event.OrderStatusEvent;
 import onlinestore.paymentservice.event.handler.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +18,8 @@ public class PaymentServiceConfig {
     private final EventHandler<OrderStatusEvent, OrderEvent> paymentEventHandler;
 
     @Autowired
-    public PaymentServiceConfig(EventHandler<OrderEvent, OrderStatusEvent> orderCreatedEventHandler, EventHandler<OrderStatusEvent, OrderEvent> paymentEventHandler) {
+    public PaymentServiceConfig(EventHandler<OrderEvent, OrderStatusEvent> orderCreatedEventHandler,
+                                EventHandler<OrderStatusEvent, OrderEvent> paymentEventHandler) {
         this.orderCreatedEventHandler = orderCreatedEventHandler;
         this.paymentEventHandler = paymentEventHandler;
     }

@@ -1,8 +1,13 @@
 package onlinestore.orderservice.model.entity;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity(name = "order_detail")
 @Data
@@ -12,17 +17,19 @@ public class OrderDetailEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude @EqualsAndHashCode.Exclude @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "order_detail_to_order_fk"), nullable = false)
     private OrderEntity order;
 
+    @Column(nullable = false)
     private String productArticle;
-
-    private Double price;
-
+    @Column(columnDefinition = "numeric(15,2)")
+    private BigDecimal price;
+    @Column(nullable = false)
     private Double quantity;
-
-    private Double amount;
+    @Column(columnDefinition = "numeric(15,2)", nullable = false)
+    private BigDecimal amount;
 
     public OrderDetailEntity withOrder(OrderEntity order) {
         this.order = order;
@@ -34,7 +41,7 @@ public class OrderDetailEntity {
         return this;
     }
 
-    public OrderDetailEntity withPrice(Double price) {
+    public OrderDetailEntity withPrice(BigDecimal price) {
         this.price = price;
         return this;
     }
@@ -44,8 +51,9 @@ public class OrderDetailEntity {
         return this;
     }
 
-    public OrderDetailEntity withAmount(Double amount) {
+    public OrderDetailEntity withAmount(BigDecimal amount) {
         this.amount = amount;
         return this;
     }
+
 }

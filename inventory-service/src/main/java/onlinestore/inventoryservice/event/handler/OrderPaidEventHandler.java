@@ -3,10 +3,9 @@ package onlinestore.inventoryservice.event.handler;
 import onlinestore.inventoryservice.event.InventoryDocumentProcessor;
 import onlinestore.inventoryservice.event.OrderEvent;
 import onlinestore.inventoryservice.event.OrderStatusEvent;
-import onlinestore.inventoryservice.model.entity.*;
+import onlinestore.inventoryservice.model.entity.DocumentStatus;
+import onlinestore.inventoryservice.model.entity.InventoryDocumentEntity;
 import onlinestore.inventoryservice.service.InventoryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class OrderPaidEventHandler implements EventHandler<OrderEvent, OrderStatusEvent> {
 
-
     private final InventoryService inventoryService;
-
     private final InventoryDocumentProcessor documentProcessor;
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderPaidEventHandler.class);
 
     @Autowired
     public OrderPaidEventHandler(InventoryService inventoryService, InventoryDocumentProcessor documentProcessor) {
@@ -30,7 +25,7 @@ public class OrderPaidEventHandler implements EventHandler<OrderEvent, OrderStat
     @Override
     @Transactional
     public OrderStatusEvent handleEvent(OrderEvent event) {
-        InventoryDocumentEntity document = new InventoryDocumentEntity(event);
+        InventoryDocumentEntity document = event.toInventoryDocumentEntity();
         try {
             inventoryService.saveDocumentWithDetails(document);
             inventoryService.deductProductStockBalance(document);

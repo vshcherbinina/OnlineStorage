@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import onlinestore.paymentservice.dto.ClientAddBalanceDto;
 import onlinestore.paymentservice.dto.ClientDto;
 import onlinestore.paymentservice.dto.ErrorDto;
-import onlinestore.paymentservice.model.entity.TransactionEntity;
 import onlinestore.paymentservice.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -48,7 +46,7 @@ public class ClientController {
     @PostMapping("/client")
     public ResponseEntity<?> addClient(@RequestHeader HttpHeaders headers, @RequestBody ClientDto input) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(clientService.createClient(input));
+                .body(clientService.createClient(input, headers));
     }
 
     @Operation(summary = "Add amount to user's account", security = @SecurityRequirement(name = "bearerAuth"))

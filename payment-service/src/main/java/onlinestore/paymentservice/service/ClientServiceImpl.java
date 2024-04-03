@@ -1,33 +1,50 @@
 package onlinestore.paymentservice.service;
 
 
+import lombok.extern.slf4j.Slf4j;
+import onlinestore.paymentservice.config.RestTemplateConfig;
 import onlinestore.paymentservice.dto.ClientAddBalanceDto;
 import onlinestore.paymentservice.dto.ClientDto;
 import onlinestore.paymentservice.exception.ClientAlreadyExistException;
 import onlinestore.paymentservice.exception.ClientCreateException;
 import onlinestore.paymentservice.exception.ClientNotFoundException;
+import onlinestore.paymentservice.exception.IncorrectDataException;
 import onlinestore.paymentservice.model.entity.AccountEntity;
 import onlinestore.paymentservice.model.entity.ClientEntity;
 import onlinestore.paymentservice.model.util.RepositoryUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ClientServiceImpl implements ClientService{
 
     private final RepositoryUtil repositoryUtil;
+    private final RestTemplate restTemplate;
+    private final String authGetUserUri;
+
 
     @Autowired
-    public ClientServiceImpl(RepositoryUtil repositoryUtil) {
+    public ClientServiceImpl(RepositoryUtil repositoryUtil, @Value("${gateway.uri}") String gatewayUri, RestTemplate restTemplate) {
         this.repositoryUtil = repositoryUtil;
+        this.authGetUserUri = gatewayUri + "/auth/user/{username}";
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -40,7 +57,7 @@ public class ClientServiceImpl implements ClientService{
 
     private void setClientAccount(ClientEntity client) throws IllegalArgumentException {
         client.setAccount(repositoryUtil.getAccountRepository().findByClientId(client.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Incorrect data - client account not found")));
+                .orElseThrow(() -> new IncorrectDataException("account", client.getId())));
 
     }
 
@@ -60,14 +77,31 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public ClientDto createClient(ClientDto clientDto) {
+    public ClientDto createClient(ClientDto clientDto, HttpHeaders headers) {
         if (clientDto.getUserName().isBlank()) {
             throw new ClientCreateException();
         }
+        URI uri = UriComponentsBuilder.fromUriString(authGetUserUri).build(clientDto.getUserName());
+        log.info("Request get to auth: {}", uri);
+        RequestEntity<Void> requestEntity = RequestEntity.get(uri)
+                .headers(headers)
+                .build();
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+            log.info("Response from auth: {}", response);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ClientCreateException(clientDto.getUserName());
+            }
+        } catch (Exception e) {
+            log.error("Response from auth with error: {}", e.toString());
+            throw new ClientCreateException(clientDto.getUserName());
+        }
+
         return ClientDto.fromClientEntity(createClient(clientDto.getUserName(), clientDto.getName(), clientDto.getBalance()));
     }
 
-    private ClientEntity createClient(String userName, String name, Double balance) {
+    @Transactional
+    private ClientEntity createClient(String userName, String name, BigDecimal balance) {
         ClientEntity client = repositoryUtil.getClientRepository().findByUserName(userName)
                 .orElse(new ClientEntity(userName, name));
         if (client.getId() != null && client.getId().compareTo(0L) > 0) {
@@ -76,12 +110,13 @@ public class ClientServiceImpl implements ClientService{
 
         ClientEntity savedClient = repositoryUtil.getClientRepository().save(client);
         createAccount(savedClient);
-        if (balance != null && balance.compareTo(0D) > 0) {
+        if (balance != null && balance.compareTo(BigDecimal.valueOf(0.00)) > 0) {
             createTransactionAndChangeBalance(savedClient, balance, true);
         }
         return savedClient;
     }
 
+    @Transactional
     @Override
     public ClientDto addBalance(ClientAddBalanceDto input) throws ClientNotFoundException, IllegalArgumentException {
         ClientEntity client = getClientByUserName(input.getUserName());
@@ -90,7 +125,7 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public void createTransactionAndChangeBalance(ClientEntity client, Double amount, boolean income) {
+    public void createTransactionAndChangeBalance(ClientEntity client, BigDecimal amount, boolean income) {
         repositoryUtil.createTransactionAndChangeBalance(client, amount, income);
     }
 

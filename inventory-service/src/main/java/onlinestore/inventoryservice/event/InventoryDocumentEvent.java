@@ -1,11 +1,11 @@
 package onlinestore.inventoryservice.event;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import onlinestore.inventoryservice.dto.OrderDetailDto;
 import onlinestore.inventoryservice.model.entity.DocumentStatus;
 import onlinestore.inventoryservice.model.entity.InventoryDocumentEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class InventoryDocumentEvent implements Event {
     private String description;
     private int income;
     private LocalDateTime orderDataCreated;
-    private Double amount;
+    private BigDecimal amount;
     private DocumentStatus status;
     private String statusDescription;
     private Long orderId;

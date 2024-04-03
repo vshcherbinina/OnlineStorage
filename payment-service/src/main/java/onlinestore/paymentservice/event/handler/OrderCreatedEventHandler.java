@@ -1,5 +1,7 @@
 package onlinestore.paymentservice.event.handler;
 
+import lombok.extern.slf4j.Slf4j;
+import onlinestore.paymentservice.dto.OrderStatusDto;
 import onlinestore.paymentservice.event.OrderEvent;
 import onlinestore.paymentservice.event.OrderStatusEvent;
 import onlinestore.paymentservice.model.entity.AccountEntity;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
+@Slf4j
 @Component
 public class OrderCreatedEventHandler implements EventHandler<OrderEvent, OrderStatusEvent> {
 
@@ -35,7 +40,13 @@ public class OrderCreatedEventHandler implements EventHandler<OrderEvent, OrderS
             payment.setId(savedPayment.getId());
             repositoryUtil.deductUserBalance(payment);
         } catch (Exception e) {
-            repositoryUtil.declinePayment(payment, e.getMessage());
+            log.error("Error handle event order created (id={}): {}", event.getId(), e.getMessage());
+            return OrderStatusEvent.builder()
+                    .orderId(event.getId())
+                    .status(OrderStatusDto.PAYMENT_FAILED)
+                    .dateModified(LocalDateTime.now())
+                    .statusDescription(e.getMessage())
+                    .build();
         }
         return OrderStatusEvent.fromPaymentEntity(payment);
     }
