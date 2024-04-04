@@ -45,7 +45,7 @@ public class OrderController {
     @Operation(summary = "Add order and start delivery process for it", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/order")
     public ResponseEntity<?> addOrder(@RequestBody OrderDto input) {
-        orderService.checkData(input);
+        orderService.checkDataAndCorrectAmount(input);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderService.addOrder(input));
     }

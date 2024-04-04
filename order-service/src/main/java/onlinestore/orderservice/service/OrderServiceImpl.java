@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void checkData(OrderDto orderDto) {
+    public void checkDataAndCorrectAmount(OrderDto orderDto) {
         if (orderDto.getUserName() == null || orderDto.getUserName().isBlank()){
             throw new IncorrectInputException("'userName' is required to identify the payer in the system");
         }

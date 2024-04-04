@@ -1,15 +1,13 @@
 package onlinestore.orderservice.service;
 
-import onlinestore.orderservice.model.entity.OrderEntity;
 import onlinestore.orderservice.dto.OrderDto;
 import onlinestore.orderservice.dto.StatusDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
-    void checkData(OrderDto orderDto);
+    void checkDataAndCorrectAmount(OrderDto orderDto);
 
     OrderDto addOrder(OrderDto orderDto);
 
